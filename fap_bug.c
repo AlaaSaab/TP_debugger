@@ -21,7 +21,7 @@ fap inserer(fap f, int element, int priorite) {
     nouveau->priorite = priorite;
 
     /* insertion en tete */
-    if ((f = NULL) || (priorite < f->priorite)) {
+    if ((f == NULL) || (priorite < f->priorite)) {
         nouveau->prochain = f;
         f = nouveau;
     }
@@ -41,16 +41,16 @@ fap inserer(fap f, int element, int priorite) {
 }
 
 fap extraire(fap f, int *element, int *priorite) {
-    fap courant;
-
-    /* extraire le premier element si la fap n'est pas vide */
-    if (f != NULL) {
-        courant = f;
-        *element = courant->element;
-        *priorite = courant->priorite;
-        courant = f->prochain;
-        free(courant);
+     if (f == NULL) {
+        return NULL;
     }
+    fap courant = f;
+
+    *element = courant->element;
+    *priorite = courant->priorite;
+
+    f = courant->prochain;
+    free(courant);
     return f;
 }
 
