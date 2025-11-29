@@ -12,14 +12,14 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    decal = (long int) argv[1];
+    decal = atoi(argv[1]);
     decal = decal % 26;
     chaine = strdup(argv[2]);
 
     for (i = 0; chaine[i] != '\0'; i++) {
         char code = chaine[i];
         if ((code >= 'A') && (code <= 'Z')) {
-            code = code + decal;
+            code = 'A' + ((code - 'A' + decal) % 26);
             chaine[i] = code;
         }
     }
