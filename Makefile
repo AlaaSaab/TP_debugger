@@ -2,6 +2,7 @@ CC      = clang
 CFLAGS  = -g
 EXE     = essai_fap essai cesar
 
+.PHONY: all clean
 all: $(EXE)
 
 essai_fap.o: essai_fap.c
@@ -19,6 +20,6 @@ essai: essai.o
 cesar: cesar.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-
+.PHONY:
 clean:
 	rm -f *.o $(EXE)
