@@ -1,33 +1,27 @@
 #include <stdio.h>
 #include "fap.h"
 
-// DO NOT include instrumentation.h here to avoid macro recursion
-// Declare the REAL functions with a different approach
-// We'll use function pointers to ensure we call the real functions
+// CRITICAL: Do NOT include instrumentation.h here!
+// This file must call the REAL functions from fap_bug.c, not the instrumented wrappers
 
-// Forward declarations of the real functions (from fap_bug.c)
-// These are the actual implementations, not the macros
-static fap (*real_inserer)(fap f, int element, int priorite) = NULL;
-static fap (*real_extraire)(fap f, int *element, int *priorite) = NULL;
+// Explicitly undefine any macros that might interfere (in case they're defined elsewhere)
+#ifdef inserer
+#undef inserer
+#endif
+#ifdef extraire
+#undef extraire
+#endif
 
-// Initialize function pointers - these will point to the real functions
-// We need to get the addresses at link time, so we'll use a different approach
-// Instead, we'll declare the real functions with a different name pattern
-
-// Actually, the best approach is to ensure we never include instrumentation.h
-// in this file, and call the functions directly by their declared names
-// Since this file doesn't include instrumentation.h, the macros aren't active here
-
-// Declare the real functions (these are the actual implementations from fap_bug.c)
-extern fap inserer(fap f, int element, int priorite);
-extern fap extraire(fap f, int *element, int *priorite);
+// Forward declare the real functions from fap_bug.c
+// Since this file doesn't include instrumentation.h, these will resolve to the real functions
+fap inserer(fap f, int element, int priorite);
+fap extraire(fap f, int *element, int *priorite);
 
 int fap_taille_courante = 0;
 int fap_taille_max = 0;
 
 fap instrumentation_inserer(fap f, int element, int priorite) {
-    // Call the real function directly - macros are not active in this file
-    // because we don't include instrumentation.h
+    // Direct call to real inserer - macros are NOT active in this file
     f = inserer(f, element, priorite);
 
     fap_taille_courante++;
@@ -39,11 +33,16 @@ fap instrumentation_inserer(fap f, int element, int priorite) {
 }
 
 fap instrumentation_extraire(fap f, int *element, int *priorite) {
+    // Only decrement if fap is not empty
+    int was_empty = (f == NULL);
     fap old = f;
-    // Call the real function directly - macros are not active in this file
+    
+    // Direct call to real extraire - macros are NOT active in this file
     f = extraire(f, element, priorite);
 
-    if (f != old) {
+    // Decrement counter only if extraction actually happened
+    // (old was not NULL means fap had elements, and f != old means extraction occurred)
+    if (!was_empty && old != NULL && f != old) {
         fap_taille_courante--;
     }
     return f;
