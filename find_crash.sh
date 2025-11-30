@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..500}
+for i in {1..1000}
 do
     ./essai > t.txt
     ./essai_fap < t.txt
