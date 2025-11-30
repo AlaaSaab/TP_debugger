@@ -63,5 +63,6 @@ int main()
       /* vide ce qu'il reste de la ligne dans le buffer d'entree */
       fgets(buffer,TAILLE_BUFFER,stdin);
     }
+  detruire_fap(f);
   return 0;
 }

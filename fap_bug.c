@@ -11,12 +11,11 @@ struct maillon {
 fap creer_fap_vide() {
     return NULL;
 }
-
 fap inserer(fap f, int element, int priorite) {
     fap nouveau, courant, precedent;
 
     /* nouveau maillon */
-    nouveau = (fap) malloc(sizeof(struct maillon *));
+    nouveau = (fap) malloc(sizeof(struct maillon));
     nouveau->element = element;
     nouveau->priorite = priorite;
 
@@ -59,6 +58,10 @@ int est_fap_vide(fap f) {
 }
 
 void detruire_fap(fap f) {
-    if (f != NULL)
-        free(f);
+    while (f != NULL) {
+        fap tmp = f;
+        f = f->prochain;
+        free(tmp);
+    }
 }
+
